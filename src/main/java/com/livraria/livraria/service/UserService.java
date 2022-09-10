@@ -2,6 +2,7 @@ package com.livraria.livraria.service;
 
 import com.livraria.livraria.component.CopyComponent;
 import com.livraria.livraria.exception.EmailUserAlreadyTakenException;
+import com.livraria.livraria.exception.EntityNotFoundException;
 import com.livraria.livraria.model.User;
 import com.livraria.livraria.model.dto.UserPostDTO;
 import com.livraria.livraria.repository.UserRepository;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.livraria.livraria.exception.EntityNotFoundException;
-
 
 import javax.transaction.Transactional;
 import java.util.List;

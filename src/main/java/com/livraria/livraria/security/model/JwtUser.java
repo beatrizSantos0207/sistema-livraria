@@ -1,12 +1,11 @@
 package com.livraria.livraria.security.model;
 
-import java.util.Collection;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Collection;
 
 @AllArgsConstructor
 @Data
