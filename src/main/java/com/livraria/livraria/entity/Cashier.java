@@ -1,31 +1,38 @@
 package com.livraria.livraria.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
-@MappedSuperclass
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-public abstract class Item implements Serializable {
+@Entity
+@Table(name = "tb_cashier")
+public class Cashier {
 
     private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long quantity;
+
+    private BigDecimal qtTotal;
+
+    private BigDecimal qtIncoming;
+
+    private BigDecimal qtOutFlow;
+
+    private LocalDateTime updatedAt;
 
 }
-
-
-

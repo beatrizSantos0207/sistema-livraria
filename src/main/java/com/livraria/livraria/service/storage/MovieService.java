@@ -1,4 +1,4 @@
-package com.livraria.livraria.service;
+package com.livraria.livraria.service.storage;
 
 import com.livraria.livraria.component.CopyComponent;
 import com.livraria.livraria.entity.Movie;

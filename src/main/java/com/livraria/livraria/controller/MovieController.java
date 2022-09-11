@@ -1,7 +1,7 @@
 package com.livraria.livraria.controller;
 
 import com.livraria.livraria.model.dto.MovieDTO;
-import com.livraria.livraria.service.MovieService;
+import com.livraria.livraria.service.storage.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

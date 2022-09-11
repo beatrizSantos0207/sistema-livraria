@@ -1,7 +1,8 @@
-package com.livraria.livraria.service;
+package com.livraria.livraria.service.storage;
 
 import com.livraria.livraria.component.CopyComponent;
 import com.livraria.livraria.entity.Book;
+import com.livraria.livraria.entity.Cashier;
 import com.livraria.livraria.exception.ItemEntityNotFoundException;
 import com.livraria.livraria.model.dto.BookDTO;
 import com.livraria.livraria.repository.IBookRepository;
@@ -19,7 +20,6 @@ public class BookService {
 
     @Autowired
     private CopyComponent copyComponent;
-
 
     public List<BookDTO> findAll() {
         return bookRepository.findAll().stream()
@@ -40,7 +40,7 @@ public class BookService {
 
     public BookDTO update(Long id, BookDTO bookDTO) {
         BookDTO foundBook = findById(id);
-        if( id.equals(bookDTO.getId())){
+        if (id.equals(bookDTO.getId())) {
             return save(bookDTO);
         }
         return null;

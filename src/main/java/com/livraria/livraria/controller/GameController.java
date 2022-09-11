@@ -1,7 +1,7 @@
 package com.livraria.livraria.controller;
 
 import com.livraria.livraria.model.dto.GameDTO;
-import com.livraria.livraria.service.GameService;
+import com.livraria.livraria.service.storage.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
