@@ -1,11 +1,13 @@
 package com.livraria.livraria.service.shopcart;
 
 import com.livraria.livraria.model.dto.MovieDTO;
+import com.livraria.livraria.model.dto.MovieDTO;
 import com.livraria.livraria.service.storage.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,25 +15,31 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MovieCartService {
 
-    private MovieService movieService;
+    private final MovieService movieService;
+
+    private final List<MovieDTO> foundMovies = new ArrayList<>();
+
 
     public BigDecimal getAmount(List<MovieDTO> movies) {
         List<MovieDTO> movieDTOS = movies.stream()
                 .filter(movieDTO -> {
-                    return updateQuantityInStock(movieDTO) != null;
+                    return verifyQuantityInStock(movieDTO) != null;
                 })
                 .collect(Collectors.toList());
-
-        return getTotalAmountInMovies(movieDTOS);
+        updateStock();
+        return getTotalAmountInMovies(movieDTOS).setScale(2);
     }
 
 
-    private MovieDTO updateQuantityInStock(MovieDTO movieDTO) {
+    private MovieDTO verifyQuantityInStock(MovieDTO movieDTO) {
         MovieDTO foundMovie = movieService.findById(movieDTO.getId());
-        if (movieDTO.getQuantity() < foundMovie.getQuantity()) {
-            foundMovie.setQuantity(foundMovie.getQuantity() - movieDTO.getQuantity());
+        if (movieDTO.getQuantity() > foundMovie.getQuantity()) {
+            movieDTO.setQuantity(foundMovie.getQuantity());
         }
-        return movieService.update(movieDTO.getId(), foundMovie);
+        movieDTO.setPrice(foundMovie.getPrice());
+        foundMovie.setQuantity(foundMovie.getQuantity() - movieDTO.getQuantity());
+        foundMovies.add(foundMovie);
+        return movieDTO;
     }
 
     private BigDecimal getTotalAmountInMovies(List<MovieDTO> movies) {
@@ -41,4 +49,9 @@ public class MovieCartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return totalAmountInMovies;
     }
+
+    private void updateStock() {
+        foundMovies.stream().forEach(movieDTO -> movieService.update(movieDTO.getId(), movieDTO));
+    }
+
 }

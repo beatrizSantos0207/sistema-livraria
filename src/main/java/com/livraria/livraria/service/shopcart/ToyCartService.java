@@ -1,11 +1,14 @@
 package com.livraria.livraria.service.shopcart;
 
 import com.livraria.livraria.model.dto.ToyDTO;
+import com.livraria.livraria.model.dto.ToyDTO;
+import com.livraria.livraria.service.storage.ToyService;
 import com.livraria.livraria.service.storage.ToyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,25 +16,31 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ToyCartService {
 
-    private ToyService toyService;
+    private final ToyService toyService;
+
+    private final List<ToyDTO> foundToys = new ArrayList<>();
+
 
     public BigDecimal getAmount(List<ToyDTO> toys) {
         List<ToyDTO> toyDTOS = toys.stream()
                 .filter(toyDTO -> {
-                    return updateQuantityInStock(toyDTO) != null;
+                    return verifyQuantityInStock(toyDTO) != null;
                 })
                 .collect(Collectors.toList());
-
-        return getTotalAmountInToys(toyDTOS);
+        updateStock();
+        return getTotalAmountInToys(toyDTOS).setScale(2);
     }
 
 
-    private ToyDTO updateQuantityInStock(ToyDTO toyDTO) {
+    private ToyDTO verifyQuantityInStock(ToyDTO toyDTO) {
         ToyDTO foundToy = toyService.findById(toyDTO.getId());
-        if (toyDTO.getQuantity() < foundToy.getQuantity()) {
-            foundToy.setQuantity(foundToy.getQuantity() - toyDTO.getQuantity());
+        if (toyDTO.getQuantity() > foundToy.getQuantity()) {
+            toyDTO.setQuantity(foundToy.getQuantity());
         }
-        return toyService.update(toyDTO.getId(), foundToy);
+        toyDTO.setPrice(foundToy.getPrice());
+        foundToy.setQuantity(foundToy.getQuantity() - toyDTO.getQuantity());
+        foundToys.add(foundToy);
+        return toyDTO;
     }
 
     private BigDecimal getTotalAmountInToys(List<ToyDTO> toys) {
@@ -41,4 +50,9 @@ public class ToyCartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return totalAmountInToys;
     }
+
+    private void updateStock() {
+        foundToys.stream().forEach(toyDTO -> toyService.update(toyDTO.getId(), toyDTO));
+    }
+
 }

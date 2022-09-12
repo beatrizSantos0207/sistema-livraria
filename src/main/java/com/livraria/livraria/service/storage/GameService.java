@@ -2,6 +2,7 @@ package com.livraria.livraria.service.storage;
 
 import com.livraria.livraria.component.CopyComponent;
 import com.livraria.livraria.entity.Game;
+import com.livraria.livraria.entity.Studio;
 import com.livraria.livraria.exception.ItemEntityNotFoundException;
 import com.livraria.livraria.model.dto.GameDTO;
 import com.livraria.livraria.repository.IGameRepository;
@@ -34,13 +35,16 @@ public class GameService {
     }
 
     public GameDTO save(GameDTO gameDTO) {
-        Game entity = gameRepository.save(copyComponent.copyDtoItensToEntity(gameDTO, Game.class));
+        Game game = copyComponent.copyDtoItensToEntity(gameDTO, Game.class);
+        Studio studioEntity = copyComponent.copyDtoAuxToEntity(gameDTO.getStudio(), Studio.class);
+        game.setStudio(studioEntity);
+        Game entity = gameRepository.save(game);
         return copyComponent.copyEntityToDto(entity, GameDTO.class);
     }
 
     public GameDTO update(Long id, GameDTO gameDTO) {
         GameDTO foundGame = findById(id);
-        if( id.equals(gameDTO.getId())){
+        if (id.equals(gameDTO.getId())) {
             return save(gameDTO);
         }
         return null;

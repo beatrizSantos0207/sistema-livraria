@@ -73,4 +73,19 @@ public class CopyComponent {
 		}).orElse(null);
 	}
 
+	public <T> T copyDtoAuxToEntity(Object dto, Class<T> entityClazz) {
+		return Optional.ofNullable(dto).map(e -> {
+			try {
+
+				T entity = entityClazz.getConstructor().newInstance();
+
+				BeanUtils.copyProperties(dto, entity);
+
+				return entity;
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+				return null;
+			}
+		}).orElse(null);
+	}
+
 }
